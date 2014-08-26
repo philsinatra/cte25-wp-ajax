@@ -8,7 +8,7 @@ if ( have_posts() ) {
 			<h2>
 			        <?php
         			$nonce = wp_create_nonce('my_custom_nonce');
-        			$link = admin_url('admin-ajax.php?action=my_launch_action&post_id='.$post->ID.'&nonce='.$nonce);
+        			$link = admin_url('admin-ajax.php?action=example_ajax_request&post_id='.$post->ID.'&nonce='.$nonce);
         			$title = get_the_title();
         			echo '<a class="post-launcher" data-nonce="' . $nonce . '" data-post-id="' . $post->ID . '" href="' . $link . '">' . $title . '</a>';
          			?>
