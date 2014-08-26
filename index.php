@@ -6,7 +6,12 @@ if ( have_posts() ) {
 		?>
 		<div class="post">
 			<h2>
-				<a href="<?php the_ID(); ?>" class="post-launcher"><?php the_title(); ?></a>
+			        <?php
+        			$nonce = wp_create_nonce('my_custom_nonce');
+        			$link = admin_url('admin-ajax.php?action=my_launch_action&post_id='.$post->ID.'&nonce='.$nonce);
+        			$title = get_the_title();
+        			echo '<a class="post-launcher" data-nonce="' . $nonce . '" data-post-id="' . $post->ID . '" href="' . $link . '">' . $title . '</a>';
+         			?>
 			</h2>
 		</div>
 		<?php
@@ -23,20 +28,22 @@ if ( have_posts() ) {
 
 <!-- The magic -->
 <script>
-jQuery(function($) {
+jQuery(document).ready(function($) {
   $('.post-launcher').click(function(e) {
     e.preventDefault();
-    var postID = $(this).attr('href');
-    var $content = $('#popup');
-    console.log('load post please');
+    var postID = $(this).attr('data-post-id');
+    console.log('postID = ' + postID);
     $.ajax({
-      type : "GET",
-      data : { "id" : postID },
-      dataType : "json",
-      url : "ABSOLUTE_PATH_TO_YOUR_FILE/loop_handler.php",
+      url: ajaxurl,
+      data: {
+        'action':'example_ajax_request',
+        'post_id': postID
+      },
+      dataType : 'json',
       success : function(data) {
-        $('#popup-title').html(data[0]);
-        $('#popup-content').html(data[1]);
+        console.log(data);
+       $('#popup-title').html(data[0]);
+       $('#popup-content').html(data[1]);
       },
       error : function (jqXHR, textStatus, errorThrown) {
         alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
